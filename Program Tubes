@@ -1,0 +1,201 @@
+#include<iostream>
+#include<cstdio>
+#include<cstdlib>
+#include<conio.h>
+using namespace std;
+/*
+* Node Declaration
+*/
+struct node_dosen
+{
+	int info;
+	string nama;
+	struct node_dosen *next;
+	struct node_dosen *prev;
+}*start, *last;
+int counter = 0;
+/*
+* Class Declaration
+*/
+class double_clist
+{
+	public:
+	node_dosen *create_node(int , string);
+	void insert_last();
+	void display();
+	void reverse();
+	void sort();
+	double_clist()
+	{
+	start = NULL;
+	last = NULL;
+	}
+};
+
+/*
+* Main: Contains Menu
+*/
+int main()
+{
+	int choice;
+	double_clist cdl;
+	while (1)
+	{
+		cout<<"\n-------------------------------"<<endl;
+		cout<<"Operations on Doubly Circular linked list"<<endl;
+		cout<<"\n-------------------------------"<<endl;
+		cout<<"1.Tambah Dosen"<<endl;
+		cout<<"2.Tambah Mahasiswa"<<endl;
+		cout<<"3.Display List"<<endl;
+		cout<<"4.Reverse List"<<endl;
+		cout<<"5.Exit"<<endl;
+		cout<<"Enter your choice : ";
+		cin>>choice;
+		switch(choice)
+		{
+			case 1:
+			cdl.insert_last();
+			break;
+			case 2:
+			cdl.sort();
+			break;
+			case 3:
+			cdl.display();
+			getch();
+			break;
+			case 4:
+			cdl.reverse();
+			break;
+			case 5:
+			exit(1);
+			default:
+			cout<<"Wrong choice"<<endl;
+		}
+	}
+return 0;
+}
+
+/*
+*MEMORY ALLOCATED FOR NODE DYNAMICALLY
+*/
+node_dosen* double_clist::create_node(int value , string nama)
+{
+	counter++;
+	struct node *temp;
+	temp = new(struct node_dosen);
+	temp->info = value;
+	temp->nama = nama;
+	temp->next = NULL;
+	temp->prev = NULL;
+	return temp;
+}
+
+/*
+*INSERTS ELEMNET AT LAST
+*/
+void double_clist::insert_last()
+{
+	int value;
+	string nama;
+	cout<<endl<<"Enter the element to be inserted: ";
+	cin>>value;
+	cout<<endl<<"Nama : ";
+	cin>>nama;
+	struct node *temp;
+	temp = create_node(value , nama);
+	if (start == last && start == NULL)
+	{
+		cout<<"Element inserted in empty list"<<endl;
+		start = last = temp;
+		start->next = last->next = NULL;
+		start->prev = last->prev = NULL;
+	}
+	else
+	{
+		last->next = temp;
+		temp->prev = last;
+		last = temp;
+		start->prev = last;
+		last->next = start;
+	}
+}
+
+/*
+* Sorting Doubly Circular Link List
+*/
+void double_clist::sort()
+{
+	struct node *temp, *s;
+	int value, i;
+	if (start == last && start == NULL)
+	{
+		cout<<"The List is empty, nothing to sort"<<endl;
+		return;
+	} s
+	= start;
+	for (i = 0;i < counter;i++)
+	{
+		temp = s->next;
+		while (temp != start)
+	{
+	if (s->info > temp->info)
+	{
+		value = s->info;
+		s->info = temp->info;
+		temp->info = value;
+	}
+	temp = temp->next;
+	} s
+		= s->next;
+	}
+}
+
+/*
+* Display Elements of the List
+*/
+void double_clist::display()
+{
+	int i;
+	struct node *s;
+	if (start == last && start == NULL)
+	{
+		cout<<"The List is empty, nothing to display"<<endl;
+		return;
+	}
+	s = start;
+	for (i = 0;i < counter-1;i++)
+	{
+		cout<< "angka : "<< s->info<<endl;
+		cout << "nama : " << s->nama << endl << endl;
+		s = s->next;
+	}
+	cout<< "angka : "<< s->info<<endl;
+	cout << "nama : " << s->nama<<endl;
+}
+
+/*
+* Reverse Doubly Circular Linked List
+*/
+void double_clist::reverse()
+{
+	if (start == last && start == NULL)
+	{
+		cout<<"The List is empty, nothing to reverse"<<endl;
+		return;
+	}
+	struct node *p1, *p2;
+	p1 = start;
+	p2 = p1->next;
+	p1->next = NULL;
+	p1->prev = p2;
+	while (p2 != start)
+	{
+		p2->prev = p2->next;
+		p2->next = p1;
+		p1 = p2;
+		p2 = p2->prev;
+	}
+	last = start;
+	start = p1;
+	cout<<"List Reversed"<<endl;
+}
