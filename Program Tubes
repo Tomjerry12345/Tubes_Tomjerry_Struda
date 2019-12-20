@@ -8,21 +8,37 @@ using namespace std;
 */
 struct node_dosen
 {
-	int info;
 	string nama;
+	int kuota;
+	int kode;
 	struct node_dosen *next;
 	struct node_dosen *prev;
 }*start, *last;
+
+struct node_mahasiswa
+{
+	string nama , nim , judul , pembimbing1;
+	int kode_pembimbing1 , kode_pembimbing2;
+	struct node_mahasiswa *next1;
+	struct node_mahasiswa *prev1;
+}*start1, *last1;
+
 int counter = 0;
+int counter1 = 0;
+int kuota = 0;
+bool pendeteksi;
 /*
 * Class Declaration
 */
 class double_clist
 {
 	public:
-	node_dosen *create_node(int , string);
-	void insert_last();
-	void display();
+	node_dosen *create_dosen(string , int , int);
+	node_mahasiswa *create_mahasiswa(string , string , string , int , int);
+	void insert_dosen();
+	void insert_mahasiswa();
+	void display_dosen();
+	void display_mahasiswa();
 	void reverse();
 	void sort();
 	double_clist()
@@ -39,6 +55,7 @@ int main()
 {
 	int choice;
 	double_clist cdl;
+	
 	while (1)
 	{
 		cout<<"\n-------------------------------"<<endl;
@@ -46,27 +63,38 @@ int main()
 		cout<<"\n-------------------------------"<<endl;
 		cout<<"1.Tambah Dosen"<<endl;
 		cout<<"2.Tambah Mahasiswa"<<endl;
-		cout<<"3.Display List"<<endl;
-		cout<<"4.Reverse List"<<endl;
-		cout<<"5.Exit"<<endl;
+		cout<<"3.Display Dosen"<<endl;
+		cout<<"4.Display Mahasiswa"<<endl;
+		cout<<"5.Reverse List"<<endl;
+		cout<<"6.Exit"<<endl;
 		cout<<"Enter your choice : ";
 		cin>>choice;
 		switch(choice)
 		{
 			case 1:
-			cdl.insert_last();
+			cdl.insert_dosen();
+			if (pendeteksi == true)
+			{
+				cdl.sort();
+			}
+			
 			break;
 			case 2:
-			cdl.sort();
+				cdl.insert_mahasiswa();
+				
 			break;
 			case 3:
-			cdl.display();
+			cdl.display_dosen();
 			getch();
 			break;
 			case 4:
-			cdl.reverse();
+			cdl.display_mahasiswa();
+			getch();
 			break;
 			case 5:
+			cdl.reverse();
+			break;
+			case 6:
 			exit(1);
 			default:
 			cout<<"Wrong choice"<<endl;
@@ -78,37 +106,54 @@ return 0;
 /*
 *MEMORY ALLOCATED FOR NODE DYNAMICALLY
 */
-node_dosen* double_clist::create_node(int value , string nama)
+node_dosen* double_clist::create_dosen(string nama , int kuota , int kode)
 {
 	counter++;
-	struct node *temp;
+	struct node_dosen *temp;
 	temp = new(struct node_dosen);
-	temp->info = value;
 	temp->nama = nama;
+	temp->kuota = kuota;
+	temp->kode = kode;
 	temp->next = NULL;
 	temp->prev = NULL;
+	return temp;
+}
+
+node_mahasiswa* double_clist::create_mahasiswa(string nama , string nim , string judul , int kode_pembimbing1 , int kode_pembimbing2)
+{
+	counter1++;
+	struct node_mahasiswa *temp;
+	temp = new(struct node_mahasiswa);
+	temp->nama = nama;
+	temp->nim = nim;
+	temp->judul = judul;
+	temp->kode_pembimbing1 = kode_pembimbing1;
+	temp->kode_pembimbing2 = kode_pembimbing2;
+	temp->next1 = NULL;
+	temp->prev1 = NULL;
 	return temp;
 }
 
 /*
 *INSERTS ELEMNET AT LAST
 */
-void double_clist::insert_last()
+void double_clist::insert_dosen()
 {
-	int value;
+	int kode;
 	string nama;
-	cout<<endl<<"Enter the element to be inserted: ";
-	cin>>value;
-	cout<<endl<<"Nama : ";
+	cout<<endl<<"Input Nama Dosen : ";
 	cin>>nama;
-	struct node *temp;
-	temp = create_node(value , nama);
+	cout << "Input Kode Dosen : ";
+	cin >> kode;
+	struct node_dosen *temp;
+	temp = create_dosen(nama , kuota , kode);
 	if (start == last && start == NULL)
 	{
 		cout<<"Element inserted in empty list"<<endl;
 		start = last = temp;
 		start->next = last->next = NULL;
 		start->prev = last->prev = NULL;
+		pendeteksi = false;
 	}
 	else
 	{
@@ -117,7 +162,45 @@ void double_clist::insert_last()
 		last = temp;
 		start->prev = last;
 		last->next = start;
+		pendeteksi = true;
 	}
+	
+}
+
+void double_clist::insert_mahasiswa()
+{
+	int kode_pembimbing1 , kode_pembimbing2;
+	string nama , nim , judul;
+	cout<<endl<<"Input Nama Mahasiswa : ";
+	cin>>nama;
+	cout<<endl<<"Input NIM Mahasiswa : ";
+	cin>>nim;
+	cout<<endl<<"Input Judul : ";
+	cin>>judul;
+	cout << "Input Kode Pembimbing 1 : ";
+	cin >> kode_pembimbing1;
+	cout << "Input Kode Pembimbing 2 : ";
+	cin >> kode_pembimbing2;
+	struct node_mahasiswa *temp;
+	temp = create_mahasiswa(nama , nim , judul , kode_pembimbing1 , kode_pembimbing2);
+	if (start1 == last1 && start1 == NULL)
+	{
+		cout<<"Element inserted in empty list"<<endl;
+		start1 = last1 = temp;
+		start1->next1 = last1->next1 = NULL;
+		start1->prev1 = last1->prev1 = NULL;
+		pendeteksi = false;
+	}
+	else
+	{
+		last1->next1 = temp;
+		temp->prev1 = last1;
+		last1 = temp;
+		start1->prev1 = last1;
+		last1->next1 = start1;
+		pendeteksi = true;
+	}
+	
 }
 
 /*
@@ -125,52 +208,96 @@ void double_clist::insert_last()
 */
 void double_clist::sort()
 {
-	struct node *temp, *s;
-	int value, i;
+	struct node_dosen *temp, *s;
+	int kuota, i;
 	if (start == last && start == NULL)
 	{
 		cout<<"The List is empty, nothing to sort"<<endl;
 		return;
-	} s
-	= start;
+	} s = start;
 	for (i = 0;i < counter;i++)
 	{
 		temp = s->next;
 		while (temp != start)
-	{
-	if (s->info > temp->info)
-	{
-		value = s->info;
-		s->info = temp->info;
-		temp->info = value;
-	}
-	temp = temp->next;
-	} s
-		= s->next;
+		{
+			if (s->kuota > temp->kuota)
+			{
+				kuota = s->kuota;
+				s->kuota = temp->kuota;
+				temp->kuota = kuota;
+			}
+			temp = temp->next;
+		}
+	 s = s->next;
 	}
 }
 
 /*
 * Display Elements of the List
 */
-void double_clist::display()
+void double_clist::display_dosen()
 {
 	int i;
-	struct node *s;
+	struct node_dosen *s;
 	if (start == last && start == NULL)
 	{
+		
 		cout<<"The List is empty, nothing to display"<<endl;
 		return;
 	}
 	s = start;
+	cout << endl;
+	cout << "Nama\t\t" << "Kuota Mahasiswa\t\t" << "Kode"<<endl<<endl;
 	for (i = 0;i < counter-1;i++)
 	{
-		cout<< "angka : "<< s->info<<endl;
-		cout << "nama : " << s->nama << endl << endl;
+		cout << s->nama << "\t\t\t" << s->kuota << "\t\t" << s->kode << endl;
 		s = s->next;
 	}
-	cout<< "angka : "<< s->info<<endl;
-	cout << "nama : " << s->nama<<endl;
+		cout << s->nama << "\t\t\t" << s->kuota << "\t\t" << s->kode << endl;
+}
+
+void double_clist::display_mahasiswa()
+{
+	int i , j;
+	struct node_mahasiswa *s;
+	struct node_dosen *p;
+	if (start1 == last1 && start1 == NULL && start == last && start == NULL)
+	{
+		
+		cout<<"The List is empty, nothing to display"<<endl;
+		return;
+	}
+	s = start1;
+	p = start;
+	cout << endl;
+	cout << "Pembimbing 1\t\t" << "Pembimbing 2\t\t" << "Nama\t\t" << "NIM\t\t" << "Judul"<<endl<<endl;
+	for (i = 0;i < counter1-1;i++)
+	{
+		for (j = 0; j < counter-1;j++)
+		{
+			if (s->kode_pembimbing1 == p->kode)
+			{
+				s->pembimbing1 = p->nama;
+			}
+			p = p->next;
+		}
+		
+		cout << s->pembimbing1 << "\t\t\t" << s->kode_pembimbing2 << "\t\t" << s->nama << "\t\t\t" << s->nim << "\t\t\t\t" << s->judul << endl;
+		s = s->next1;
+		
+	}
+		for (j = 0; j < counter1;j++)
+		{
+			if (s->kode_pembimbing1 == p->kode)
+			{
+				s->pembimbing1 = p->nama;
+				cout << "pembimbing = " << s->pembimbing1;
+				cout << endl;
+			}
+			p = p->next;
+		}
+		cout << "Pertama" << endl;
+		cout << s->pembimbing1 << "\t\t\t" << s->kode_pembimbing2 << "\t\t" << s->nama << "\t\t\t" << s->nim << "\t\t\t\t" << s->judul << endl;
 }
 
 /*
@@ -183,7 +310,7 @@ void double_clist::reverse()
 		cout<<"The List is empty, nothing to reverse"<<endl;
 		return;
 	}
-	struct node *p1, *p2;
+	struct node_dosen *p1, *p2;
 	p1 = start;
 	p2 = p1->next;
 	p1->next = NULL;
