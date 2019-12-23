@@ -11,13 +11,14 @@ struct node_dosen
 	string nama;
 	int kuota;
 	int kode;
+	int kuota1;
 	struct node_dosen *next;
 	struct node_dosen *prev;
 }*start, *last;
 
 struct node_mahasiswa
 {
-	string nama , nim , judul , pembimbing1;
+	string nama , nim , judul , pembimbing1 , pembimbing2;
 	int kode_pembimbing1 , kode_pembimbing2;
 	struct node_mahasiswa *next1;
 	struct node_mahasiswa *prev1;
@@ -25,8 +26,11 @@ struct node_mahasiswa
 
 int counter = 0;
 int counter1 = 0;
-int kuota = 0;
-bool pendeteksi;
+int kuota;
+int nilai[10];
+int o = 1;
+
+void testing();
 /*
 * Class Declaration
 */
@@ -39,14 +43,17 @@ class double_clist
 	void insert_mahasiswa();
 	void display_dosen();
 	void display_mahasiswa();
-	void reverse();
-	void sort();
+	
 	double_clist()
 	{
 	start = NULL;
 	last = NULL;
+	start1 = NULL;
+	last1 = NULL;
 	}
 };
+
+void update(int , int);
 
 /*
 * Main: Contains Menu
@@ -54,51 +61,53 @@ class double_clist
 int main()
 {
 	int choice;
+
 	double_clist cdl;
-	
 	while (1)
 	{
+		system("cls");
+		
+		cout << endl;
+		cdl.display_dosen();
+		cdl.display_mahasiswa();
+		
+		
+		cout << endl;
+		
+		
+		
+		
 		cout<<"\n-------------------------------"<<endl;
 		cout<<"Operations on Doubly Circular linked list"<<endl;
 		cout<<"\n-------------------------------"<<endl;
 		cout<<"1.Tambah Dosen"<<endl;
 		cout<<"2.Tambah Mahasiswa"<<endl;
-		cout<<"3.Display Dosen"<<endl;
-		cout<<"4.Display Mahasiswa"<<endl;
-		cout<<"5.Reverse List"<<endl;
-		cout<<"6.Exit"<<endl;
+		cout<<"3.Exit"<<endl;
 		cout<<"Enter your choice : ";
 		cin>>choice;
 		switch(choice)
 		{
 			case 1:
 			cdl.insert_dosen();
-			if (pendeteksi == true)
-			{
-				cdl.sort();
-			}
 			
 			break;
 			case 2:
-				cdl.insert_mahasiswa();
-				
+			cdl.insert_mahasiswa();		
 			break;
 			case 3:
-			cdl.display_dosen();
-			getch();
-			break;
-			case 4:
-			cdl.display_mahasiswa();
-			getch();
-			break;
-			case 5:
-			cdl.reverse();
-			break;
-			case 6:
 			exit(1);
 			default:
 			cout<<"Wrong choice"<<endl;
+			
 		}
+		
+		if (choice != 1)
+		{
+			testing();
+			getch();
+		}
+		
+		
 	}
 return 0;
 }
@@ -140,6 +149,7 @@ node_mahasiswa* double_clist::create_mahasiswa(string nama , string nim , string
 void double_clist::insert_dosen()
 {
 	int kode;
+	
 	string nama;
 	cout<<endl<<"Input Nama Dosen : ";
 	cin>>nama;
@@ -153,7 +163,6 @@ void double_clist::insert_dosen()
 		start = last = temp;
 		start->next = last->next = NULL;
 		start->prev = last->prev = NULL;
-		pendeteksi = false;
 	}
 	else
 	{
@@ -162,7 +171,6 @@ void double_clist::insert_dosen()
 		last = temp;
 		start->prev = last;
 		last->next = start;
-		pendeteksi = true;
 	}
 	
 }
@@ -189,7 +197,6 @@ void double_clist::insert_mahasiswa()
 		start1 = last1 = temp;
 		start1->next1 = last1->next1 = NULL;
 		start1->prev1 = last1->prev1 = NULL;
-		pendeteksi = false;
 	}
 	else
 	{
@@ -198,7 +205,6 @@ void double_clist::insert_mahasiswa()
 		last1 = temp;
 		start1->prev1 = last1;
 		last1->next1 = start1;
-		pendeteksi = true;
 	}
 	
 }
@@ -206,31 +212,6 @@ void double_clist::insert_mahasiswa()
 /*
 * Sorting Doubly Circular Link List
 */
-void double_clist::sort()
-{
-	struct node_dosen *temp, *s;
-	int kuota, i;
-	if (start == last && start == NULL)
-	{
-		cout<<"The List is empty, nothing to sort"<<endl;
-		return;
-	} s = start;
-	for (i = 0;i < counter;i++)
-	{
-		temp = s->next;
-		while (temp != start)
-		{
-			if (s->kuota > temp->kuota)
-			{
-				kuota = s->kuota;
-				s->kuota = temp->kuota;
-				temp->kuota = kuota;
-			}
-			temp = temp->next;
-		}
-	 s = s->next;
-	}
-}
 
 /*
 * Display Elements of the List
@@ -239,90 +220,192 @@ void double_clist::display_dosen()
 {
 	int i;
 	struct node_dosen *s;
+	int j;
+	
 	if (start == last && start == NULL)
 	{
 		
 		cout<<"The List is empty, nothing to display"<<endl;
 		return;
 	}
+	
 	s = start;
+	
 	cout << endl;
+	cout << "Daftar Dosen" << endl<<endl;
 	cout << "Nama\t\t" << "Kuota Mahasiswa\t\t" << "Kode"<<endl<<endl;
 	for (i = 0;i < counter-1;i++)
 	{
+		
 		cout << s->nama << "\t\t\t" << s->kuota << "\t\t" << s->kode << endl;
 		s = s->next;
 	}
+		
 		cout << s->nama << "\t\t\t" << s->kuota << "\t\t" << s->kode << endl;
 }
 
 void double_clist::display_mahasiswa()
 {
 	int i , j;
+	
 	struct node_mahasiswa *s;
-	struct node_dosen *p;
-	if (start1 == last1 && start1 == NULL && start == last && start == NULL)
+	if (start1 == last1 && start1 == NULL)
 	{
 		
 		cout<<"The List is empty, nothing to display"<<endl;
 		return;
 	}
 	s = start1;
-	p = start;
 	cout << endl;
 	cout << "Pembimbing 1\t\t" << "Pembimbing 2\t\t" << "Nama\t\t" << "NIM\t\t" << "Judul"<<endl<<endl;
-	for (i = 0;i < counter1-1;i++)
+	for (i = 0;i < counter1-1;i++) 
 	{
-		for (j = 0; j < counter-1;j++)
-		{
-			if (s->kode_pembimbing1 == p->kode)
-			{
-				s->pembimbing1 = p->nama;
-			}
-			p = p->next;
-		}
-		
-		cout << s->pembimbing1 << "\t\t\t" << s->kode_pembimbing2 << "\t\t" << s->nama << "\t\t\t" << s->nim << "\t\t\t\t" << s->judul << endl;
+		cout << s->pembimbing1 << "\t\t\t" << s->pembimbing2 << "\t\t" << s->nama << "\t\t\t" << s->nim << "\t\t\t\t" << s->judul << endl;
 		s = s->next1;
 		
 	}
-		for (j = 0; j < counter1;j++)
-		{
-			if (s->kode_pembimbing1 == p->kode)
-			{
-				s->pembimbing1 = p->nama;
-				cout << "pembimbing = " << s->pembimbing1;
-				cout << endl;
-			}
-			p = p->next;
-		}
-		cout << "Pertama" << endl;
-		cout << s->pembimbing1 << "\t\t\t" << s->kode_pembimbing2 << "\t\t" << s->nama << "\t\t\t" << s->nim << "\t\t\t\t" << s->judul << endl;
+	
+		cout << s->pembimbing1 << "\t\t\t" << s->pembimbing2 << "\t\t" << s->nama << "\t\t\t" << s->nim << "\t\t\t\t" << s->judul << endl;
 }
 
-/*
-* Reverse Doubly Circular Linked List
-*/
-void double_clist::reverse()
+void testing()
 {
+	struct node_mahasiswa *s;
+	struct node_dosen *p;
+	int i , j;
+	int posisi = 1;
+	
+	
+	
 	if (start == last && start == NULL)
 	{
-		cout<<"The List is empty, nothing to reverse"<<endl;
+		
+		cout<<"The List is empty, nothing to display"<<endl;
 		return;
 	}
-	struct node_dosen *p1, *p2;
-	p1 = start;
-	p2 = p1->next;
-	p1->next = NULL;
-	p1->prev = p2;
-	while (p2 != start)
+	
+	p = start;
+	for (i = 0;i < counter -1;i++)
 	{
-		p2->prev = p2->next;
-		p2->next = p1;
-		p1 = p2;
-		p2 = p2->prev;
+		if (start1 == last1 && start1 == NULL)
+		{
+		
+			cout<<"The List is empty, nothing to display"<<endl;
+			return;
+		} else {
+			
+			
+			s = last1;
+			
+			if (s->kode_pembimbing1 == p->kode)
+			{
+				cout << "succes" << endl;
+				
+				nilai[o]++;
+				s->pembimbing1 = p->nama;
+				update(nilai[o] , posisi);	
+			}
+			
+			if (s->kode_pembimbing2 == p->kode)
+			{
+				cout << "succes" << endl;
+				
+				nilai[o]++;
+				s->pembimbing2 = p->nama;
+				update(nilai[o] , posisi);	
+			}
+			
+		}
+		
+		p = p->next;
+		o++;
+		posisi++;
 	}
-	last = start;
-	start = p1;
-	cout<<"List Reversed"<<endl;
+		if (s->kode_pembimbing1 == p->kode)
+		{
+			cout << "succes" << endl;
+			
+			nilai[o]++;
+			s->pembimbing1 = p->nama;
+			update(nilai[o] , posisi);
+		}
+		
+		if (s->kode_pembimbing2 == p->kode)
+		{
+			cout << "succes" << endl;
+				
+			nilai[o]++;
+			s->pembimbing2 = p->nama;
+			update(nilai[o] , posisi);	
+		}
+		
+		cout << "success : " << p->kode << endl;
+		o = 1;
+		posisi++;
+
+}
+
+
+
+
+
+/*
+* Update value of a particular node
+*/
+void update(int a , int b)
+{
+	int value, i, pos;
+	if (start == last && start == NULL)
+	{
+	cout<<"The List is empty, nothing to update"<<endl;
+	return;
+	}
+	value = a;
+	pos = b;
+	struct node_dosen *s;
+	if (counter < pos)
+	{
+	cout<<"Position out of range"<<endl;
+	return;
+	} s= start;
+	if (pos == 1)
+	{
+	s->kuota = value;
+	cout<<"Node Updated"<<endl;
+	return;
+	}
+	for (i=0;i < pos - 1;i++)
+	{
+	s = s->next;
+	} 
+	s->kuota = value;
+	cout<<"Node Updated"<<endl;
+}
+
+
+void double_clist::sort()
+{
+	struct node *temp, *s;
+	int value, i;
+	if (start == last && start == NULL)
+	{
+	cout<<"The List is empty, nothing to sort"<<endl;
+	return;
+	} s
+	= start;
+	for (i = 0;i < counter;i++)
+	{
+	temp = s->next;
+	while (temp != start)
+	{
+	if (s->info > temp->info)
+	{
+	value = s->info;
+	s->info = temp->info;
+	temp->info = value;
+	}
+	temp = temp->next;
+	} s
+	= s->next;
+	}
 }
