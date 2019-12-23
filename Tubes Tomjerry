@@ -30,6 +30,10 @@ int kuota;
 int nilai[10];
 int o = 1;
 
+const int max = 5;
+
+bool pendeteksi = true;
+
 void testing();
 /*
 * Class Declaration
@@ -43,6 +47,9 @@ class double_clist
 	void insert_mahasiswa();
 	void display_dosen();
 	void display_mahasiswa();
+	void update();
+	void sort();
+	void sort1();
 	
 	double_clist()
 	{
@@ -54,6 +61,7 @@ class double_clist
 };
 
 void update(int , int);
+void delete_pos(int);
 
 /*
 * Main: Contains Menu
@@ -82,6 +90,8 @@ int main()
 		cout<<"\n-------------------------------"<<endl;
 		cout<<"1.Tambah Dosen"<<endl;
 		cout<<"2.Tambah Mahasiswa"<<endl;
+		cout<<"3.Tampilkan Daftar Berdasarkan Dosen Pembimbing Terbanyak" << endl;
+		cout<<"4.Tampilkan Daftar Berdasarkan Dosen Pembimbing Sedikit" << endl;
 		cout<<"3.Exit"<<endl;
 		cout<<"Enter your choice : ";
 		cin>>choice;
@@ -95,13 +105,20 @@ int main()
 			cdl.insert_mahasiswa();		
 			break;
 			case 3:
+			cdl.sort1();
+			getch();	
+			break;
+			case 4:
+			cdl.sort();	
+			break;
+			case 5:
 			exit(1);
 			default:
 			cout<<"Wrong choice"<<endl;
 			
 		}
 		
-		if (choice != 1)
+		if (choice != 1 && choice != 3 && choice != 4 && pendeteksi == true)
 		{
 			testing();
 			getch();
@@ -179,6 +196,7 @@ void double_clist::insert_mahasiswa()
 {
 	int kode_pembimbing1 , kode_pembimbing2;
 	string nama , nim , judul;
+	
 	cout<<endl<<"Input Nama Mahasiswa : ";
 	cin>>nama;
 	cout<<endl<<"Input NIM Mahasiswa : ";
@@ -189,6 +207,13 @@ void double_clist::insert_mahasiswa()
 	cin >> kode_pembimbing1;
 	cout << "Input Kode Pembimbing 2 : ";
 	cin >> kode_pembimbing2;
+	if (kode_pembimbing1 == kode_pembimbing2)
+	{
+		cout << "kode pembimbing tidak boleh sama!!!";
+		pendeteksi = false;
+		getch();
+		return;
+	}
 	struct node_mahasiswa *temp;
 	temp = create_mahasiswa(nama , nim , judul , kode_pembimbing1 , kode_pembimbing2);
 	if (start1 == last1 && start1 == NULL)
@@ -302,6 +327,10 @@ void testing()
 				cout << "succes" << endl;
 				
 				nilai[o]++;
+//				if (nilai[o] == 3)
+//				{
+//					delete_pos(posisi);
+//				}
 				s->pembimbing1 = p->nama;
 				update(nilai[o] , posisi);	
 			}
@@ -311,12 +340,23 @@ void testing()
 				cout << "succes" << endl;
 				
 				nilai[o]++;
+//				if (nilai[o] == 3)
+//				{
+//					delete_pos(posisi);
+//				}
 				s->pembimbing2 = p->nama;
 				update(nilai[o] , posisi);	
 			}
 			
 		}
 		
+		if (p->kuota > 3)
+		{
+			cout << "full";
+			p->kuota = 3;
+			delete_pos(posisi);
+			return;
+		}
 		p = p->next;
 		o++;
 		posisi++;
@@ -339,7 +379,18 @@ void testing()
 			update(nilai[o] , posisi);	
 		}
 		
+		if (p->kuota > 3)
+		{
+			nilai[o] = 3;
+			update(nilai[o] , posisi);
+			cout << "full";
+			
+			delete_pos(posisi);
+			return;
+		}
+		
 		cout << "success : " << p->kode << endl;
+		
 		o = 1;
 		posisi++;
 
@@ -385,27 +436,117 @@ void update(int a , int b)
 
 void double_clist::sort()
 {
-	struct node *temp, *s;
-	int value, i;
+	struct node_dosen *temp, *s;
+	int value, i,value2;
+	string value1;
 	if (start == last && start == NULL)
 	{
-	cout<<"The List is empty, nothing to sort"<<endl;
-	return;
-	} s
-	= start;
+		cout<<"The List is empty, nothing to sort"<<endl;
+		return;
+	} 
+	s = start;
 	for (i = 0;i < counter;i++)
 	{
-	temp = s->next;
-	while (temp != start)
-	{
-	if (s->info > temp->info)
-	{
-	value = s->info;
-	s->info = temp->info;
-	temp->info = value;
+		temp = s->next;
+		while (temp != start)
+		{
+		if (s->kuota > temp->kuota)
+		{
+			value = s->kuota;
+			s->kuota = temp->kuota;
+			temp->kuota = value;
+			
+			value1 = s->nama;
+			s->nama = temp->nama;
+			temp->nama = value1;
+			
+			value2 = s->kode;
+			s->kode = temp->kode;
+			temp->kode = value2;
+		}
+		temp = temp->next;
+		} 
+		s = s->next;
 	}
-	temp = temp->next;
-	} s
-	= s->next;
+	cout << "succes"<< endl;
+}
+
+void double_clist::sort1()
+{
+	struct node_dosen *temp, *s;
+	int value, i,value2;
+	string value1;
+	if (start == last && start == NULL)
+	{
+		cout<<"The List is empty, nothing to sort"<<endl;
+		return;
+	} 
+	s = start;
+	for (i = 0;i < counter;i++)
+	{
+		temp = s->next;
+		while (temp != start)
+		{
+		if (s->kuota < temp->kuota)
+		{
+			value = s->kuota;
+			s->kuota = temp->kuota;
+			temp->kuota = value;
+			
+			value1 = s->nama;
+			s->nama = temp->nama;
+			temp->nama = value1;
+			
+			value2 = s->kode;
+			s->kode = temp->kode;
+			temp->kode = value2;
+		}
+		temp = temp->next;
+		} 
+		s = s->next;
 	}
+	cout << "succes"<< endl;
+}
+
+
+
+void delete_pos(int a)
+{
+	int pos, i;
+	node_mahasiswa *ptr, *s;
+	if (start1 == last1 && start1 == NULL)
+	{
+	cout<<"List is empty, nothing to delete"<<endl;
+	return;
+	}
+	pos = 4;
+	if (counter1 < pos)
+	{
+	cout<<"Position out of range"<<endl;
+	return;
+	} s= start1;
+	if(pos == 1)
+	{
+		counter1--;
+		last1->next1 = s->next1;
+		s->next1->prev1 = last1;
+		start1 = s->next1;
+		free(s);
+		cout<<"Element Deleted"<<endl;
+	return;
+	}
+	for (i = 0;i < pos - 1;i++ )
+	{
+		s = s->next1;
+		ptr = s->prev1;
+	}
+		ptr->next1 = s->next1;
+		s->next1->prev1 = ptr;
+	if (pos == counter1)
+	{
+	last1 = ptr;
+	}
+	counter1--;
+	free(s);
+	cout<<"Element Deleted"<<endl;
 }
