@@ -1,0 +1,186 @@
+#include<iostream>
+#include<conio.h>
+#include<iomanip>
+#define MAX 20
+using namespace std;
+int tarif1[MAX];
+int t1 = 0;
+int counter , f;
+int uang,pesan,kembalian,total , pilih;
+string flat[MAX];
+string hari[MAX] = {"senin" , "selasa" , "rabu" , "kamis" , "jumat" , "sabtu" , "minggu"};
+
+struct Stack {
+	char plat[MAX][MAX];
+	int top,tarif[MAX],t[MAX];
+	string status[MAX];
+	char keluar[MAX][MAX];
+	char kembali[MAX][MAX];
+	int total[MAX];
+}Tumpukan;
+
+void init(){
+	Tumpukan.top = 0;
+	counter = 0;
+}
+
+bool kosong(){
+	return Tumpukan.top == -1;
+}
+
+bool penuh(){
+	return Tumpukan.top == MAX-1;
+}
+
+int clear()
+{
+	while((getchar())^'\n');
+}
+
+void push(){
+	if(penuh()) {
+		cout<<"\nPenuh"<<endl;
+	}
+	else{
+		Tumpukan.top++;
+		cout<<"\nMasukkan Plat Mobil: ";clear();gets(Tumpukan.plat[Tumpukan.top]);
+		Tumpukan.status[Tumpukan.top] = "booked";
+		cout<<"Masukkan Tarif/Hari : "; cin>>Tumpukan.tarif[Tumpukan.top];
+		Tumpukan.t[Tumpukan.top] = t1; 
+	}
+}
+
+void printStack(){
+	if(kosong()){
+		cout<<"kosong";
+	}
+	else {
+		cout<<"=========================================================\n";
+		cout<<"|	Plat Mobil	|	Status	|  Tarif/Hari	|\n";
+		cout<<"=========================================================\n";
+		for (int i = 1; i<= Tumpukan.top;i++){
+			cout<<"|  "<<setiosflags(ios::left)<<setw(21)<<Tumpukan.plat[i]<<"|";
+			cout<<" "<<setiosflags(ios::left)<<setw(14)<<Tumpukan.status[i]<<"|";
+			cout<<" "<<setiosflags(ios::left)<<setw(14)<<Tumpukan.tarif[i]<<"|";
+			cout<<"\n=========================================================\n";
+		}
+	}
+}
+void masuk()
+{
+		cout<<"==================================================\n";
+		cout<<"|	Plat Mobil	|	Status	|	Tarif/Hari	|\n";
+		cout<<"==================================================\n";
+		for (int i = 0; i<= Tumpukan.top;i++){
+			cout<<"|  "<<setiosflags(ios::left)<<setw(20)<<Tumpukan.plat[i]<<"|";
+			cout<<" "<<setiosflags(ios::left)<<setw(14)<<Tumpukan.status[i]<<"|";
+			cout<<" "<<setiosflags(ios::left)<<setw(12)<<Tumpukan.tarif[i]<<"|";
+			cout<<"\n==================================================\n";
+		}
+} 
+
+void keluar()
+{
+		cout<<"==================================================\n";
+		cout<<"|	Plat Mobil	|	Status	|	Tarif/Hari		|\n";
+		cout<<"==================================================\n";
+		for (int i = 1; i<= counter;i++){
+			cout<<"|  "<<setiosflags(ios::left)<<setw(20)<<flat[i]<<"|";
+			cout<<" "<<setiosflags(ios::left)<<setw(14)<<Tumpukan.keluar[i]<<"|";
+			cout<<" "<<setiosflags(ios::left)<<setw(12)<<Tumpukan.kembali[i]<<"|";
+			cout<<" "<<setiosflags(ios::left)<<setw(8)<<Tumpukan.tarif[i]<<"|";
+			cout<<"==================================================\n";
+		}
+}
+
+void platBaru()
+{
+	counter++;
+	cout<<"Masukkan Pilihan : ";cin>>pilih;
+	cout<<"Flat Mobil : ";cin>>flat[counter];
+	cout<<"Hari Keluar : ";cin >>Tumpukan.keluar[counter];
+	cout<<"Hari Kembali : ";cin>>Tumpukan.kembali[counter];
+	
+}
+
+void proses()
+{
+	int a = 0;
+	int d , e;
+	
+	for (int i = 1;i <=Tumpukan.top;i++)
+	{
+		if (pilih == i)
+		{
+				for (int j = 1;j < 8;j++)
+				{
+					if (hari[j] == Tumpukan.keluar[counter])
+					{
+						d = j;
+					}
+					if (hari[j] == Tumpukan.kembali[counter])
+					{
+						e = j;
+					}
+				}
+				
+				for (int a = d; a <= e;a++)
+				{
+					f++;
+				}	
+		}
+		
+		if(flat[counter] == Tumpukan.plat[i])
+		{
+			Tumpukan.status[i] = "free";
+			tarif1[counter] = f * Tumpukan.tarif[i];
+		}
+		
+	}
+	
+	
+}
+int main(){
+	
+	init();
+	do {
+	
+		cout<<"\n1. Tambah Plat Mobil";
+		cout<<"\n2. Daftar Rental Masuk";
+		cout<<"\n3. Daftar Rental Keluar";
+		cout<<"\n4. Pembayaran";
+		cout<<"\n5. Keluar";
+		cout<<"Masukkan Pilihan : ";
+		cin>>pilih;
+		
+		switch(pilih){
+			case 1 : 
+				push();
+				printStack();
+				getch();
+				system("cls");
+				break;
+			case 2 :
+				masuk();
+				getch();
+				system("cls");
+				break;
+			case 3 : 
+				keluar();
+				getch();
+				system("cls");
+				break;
+				
+			case 4 :
+				printStack();
+				platBaru();
+				proses();
+				cout << "f : " << f << endl;
+				getch();
+				
+				break;
+			default:
+				cout<<"Salah Input";
+		}
+	} while(pilih != 5);
+}
