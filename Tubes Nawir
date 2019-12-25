@@ -1,0 +1,62 @@
+#include <iostream>
+#include <conio.h>
+
+using namespace std;
+
+int kuota[10] , potongan[10];
+char voucher[20][10];
+int counter = 1;
+
+main()
+{
+	int pil , pil1;
+	
+	do {
+	system("cls");
+	cout << "1.Tambah kode voucher\n"
+		 << "2.hapus kode voucher\n"
+		 << "3.tampilkan menu\n"
+		 << "4.Bayar\n";
+	cout << "input pilihan : ";
+	cin >> pil;
+		switch(pil)
+		{
+			case 1 :
+		
+					cout << "input voucher : ";
+					cin >> voucher[counter];
+					cout << "input kuota : ";
+					cin >> kuota[counter];
+					cout << "input potongan : ";
+					cin >> potongan[counter];
+					
+				
+				counter++;
+			
+				break;
+			case 2 : 
+				
+				break;
+			case 3 :
+				cout << "1.kuota terbesar\n"
+					 << "2.potongan terkecil\n";
+				cout << "input pilihan : ";
+				cin >> pil1;
+				switch(pil1)
+				{
+					case 1:
+						cout << endl;
+						cout << "kode voucher\t\t kuota\t\t potongan" <<endl;
+						for (int i = 1;i <counter;i++)
+						{
+							cout << i<<"."<<voucher[i]<<"\t\t\t"<<kuota[i]<<"\t\t\t"<<potongan[i]<<endl;
+						}
+						getch();
+						break;
+				}
+				break;
+			case 4 :
+				break;
+		}
+	} while(pil != 5);
+}
