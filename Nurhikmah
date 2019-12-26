@@ -44,7 +44,7 @@ void push(){
 	else{
 		Tumpukan.top++;
 		cout<<"\nMasukkan Plat Mobil: ";clear();gets(Tumpukan.plat[Tumpukan.top]);
-		Tumpukan.status[Tumpukan.top] = "booked";
+		Tumpukan.status[Tumpukan.top] = "free";
 		cout<<"Masukkan Tarif/Hari : "; cin>>Tumpukan.tarif[Tumpukan.top];
 		Tumpukan.t[Tumpukan.top] = t1; 
 	}
@@ -68,27 +68,32 @@ void printStack(){
 }
 void masuk()
 {
-		cout<<"==================================================\n";
-		cout<<"|	Plat Mobil	|	Status	|	Tarif/Hari	|\n";
-		cout<<"==================================================\n";
+		cout<<"=============================================================\n";
+		cout<<"|	Plat Mobil	|	Status	|	Tarif/Hari  |\n";
+		cout<<"=============================================================\n";
 		for (int i = 0; i<= Tumpukan.top;i++){
-			cout<<"|  "<<setiosflags(ios::left)<<setw(20)<<Tumpukan.plat[i]<<"|";
-			cout<<" "<<setiosflags(ios::left)<<setw(14)<<Tumpukan.status[i]<<"|";
-			cout<<" "<<setiosflags(ios::left)<<setw(12)<<Tumpukan.tarif[i]<<"|";
-			cout<<"\n==================================================\n";
+			
+			if (Tumpukan.status[i] == "free")
+			{
+				cout<<"|  "<<setiosflags(ios::left)<<setw(21)<<Tumpukan.plat[i]<<"|";
+				cout<<" "<<setiosflags(ios::left)<<setw(14)<<Tumpukan.status[i]<<"|";
+				cout<<" "<<setiosflags(ios::left)<<setw(18)<<Tumpukan.tarif[i]<<"|";
+				cout<<"\n=============================================================\n";
+			}
+			
 		}
 } 
 
 void keluar()
 {
-		cout<<"==================================================\n";
-		cout<<"|	Plat Mobil	|	Status	|	Tarif/Hari		|\n";
-		cout<<"==================================================\n";
+		cout<<"=========================================================\n";
+		cout<<"|	Plat Mobil	|	Hari Keluar	|	Hari Kembali | Tarif\n";
+		cout<<"=========================================================\n";
 		for (int i = 1; i<= counter;i++){
 			cout<<"|  "<<setiosflags(ios::left)<<setw(20)<<flat[i]<<"|";
 			cout<<" "<<setiosflags(ios::left)<<setw(14)<<Tumpukan.keluar[i]<<"|";
 			cout<<" "<<setiosflags(ios::left)<<setw(12)<<Tumpukan.kembali[i]<<"|";
-			cout<<" "<<setiosflags(ios::left)<<setw(8)<<Tumpukan.tarif[i]<<"|";
+			cout<<" "<<setiosflags(ios::left)<<setw(8)<<tarif1[i]<<"|\n";
 			cout<<"==================================================\n";
 		}
 }
@@ -107,6 +112,7 @@ void proses()
 {
 	int a = 0;
 	int d , e;
+	f = 0;
 	
 	for (int i = 1;i <=Tumpukan.top;i++)
 	{
@@ -132,7 +138,7 @@ void proses()
 		
 		if(flat[counter] == Tumpukan.plat[i])
 		{
-			Tumpukan.status[i] = "free";
+			Tumpukan.status[i] = "boocked";
 			tarif1[counter] = f * Tumpukan.tarif[i];
 		}
 		
@@ -140,6 +146,7 @@ void proses()
 	
 	
 }
+
 int main(){
 	
 	init();
